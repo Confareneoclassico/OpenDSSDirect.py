@@ -1,116 +1,84 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from ._utils import lib, codec, CheckForError, get_string, get_string_array
+
+from ._utils import codec, CheckForError, api_util, Iterable
 
 
-def AllNames():
-    """(read-only) List of strings with all Relay names"""
-    return get_string_array(lib.Relays_Get_AllNames)
+class IRelays(Iterable):
+    __slots__ = []
+    _api_prefix = "Relays"
+    _columns = [
+        "Name",
+        "Idx",
+        "MonitoredObj",
+        "MonitoredTerm",
+        "SwitchedObj",
+        "SwitchedTerm",
+    ]
+
+    def MonitoredObj(self, *args):
+        """Full name of object this Relay is monitoring."""
+        # Getter
+        if len(args) == 0:
+            return self._get_string(self._lib.Relays_Get_MonitoredObj())
+
+        # Setter
+        Value, = args
+        if type(Value) is not bytes:
+            Value = Value.encode(self._api_util.codec)
+        self._lib.Relays_Set_MonitoredObj(Value)
+        self.CheckForError()
+
+    def MonitoredTerm(self, *args):
+        """Number of terminal of monitored element that this Relay is monitoring."""
+        # Getter
+        if len(args) == 0:
+            return self._lib.Relays_Get_MonitoredTerm()
+
+        # Setter
+        Value, = args
+        self._lib.Relays_Set_MonitoredTerm(Value)
+        self.CheckForError()
+
+    def SwitchedObj(self, *args):
+        """Full name of element that will be switched when relay trips."""
+        # Getter
+        if len(args) == 0:
+            return self._get_string(self._lib.Relays_Get_SwitchedObj())
+
+        # Setter
+        Value, = args
+        if type(Value) is not bytes:
+            Value = Value.encode(self._api_util.codec)
+        self._lib.Relays_Set_SwitchedObj(Value)
+        self.CheckForError()
+
+    def SwitchedTerm(self, *args):
+        """Terminal number of the switched object that will be opened when the relay trips."""
+        # Getter
+        if len(args) == 0:
+            return self._lib.Relays_Get_SwitchedTerm()
+
+        # Setter
+        Value, = args
+        self._lib.Relays_Set_SwitchedTerm(Value)
+        self.CheckForError()
 
 
-def Count():
-    """(read-only) Number of Relays"""
-    return lib.Relays_Get_Count()
+_Relays = IRelays(api_util)
 
-
-def First():
-    """Set first Relay active; returns 0 if none."""
-    return lib.Relays_Get_First()
-
-
-def MonitoredObj(*args):
-    """Full name of object this Relay is monitoring."""
-    # Getter
-    if len(args) == 0:
-        return get_string(lib.Relays_Get_MonitoredObj())
-
-    # Setter
-    Value, = args
-    if type(Value) is not bytes:
-        Value = Value.encode(codec)
-    lib.Relays_Set_MonitoredObj(Value)
-    CheckForError()
-
-
-def MonitoredTerm(*args):
-    """Number of terminal of monitored element that this Relay is monitoring."""
-    # Getter
-    if len(args) == 0:
-        return lib.Relays_Get_MonitoredTerm()
-
-    # Setter
-    Value, = args
-    lib.Relays_Set_MonitoredTerm(Value)
-    CheckForError()
-
-
-def Name(*args):
-    """
-    Get/set the name of the active Relay
-    """
-    # Getter
-    if len(args) == 0:
-        return get_string(lib.Relays_Get_Name())
-
-    # Setter
-    Value, = args
-    if type(Value) is not bytes:
-        Value = Value.encode(codec)
-    CheckForError(lib.Relays_Set_Name(Value))
-
-
-def Next():
-    """Sets next Relay active; returns 0 if no more."""
-    return lib.Relays_Get_Next()
-
-
-def SwitchedObj(*args):
-    """Full name of element that will be switched when relay trips."""
-    # Getter
-    if len(args) == 0:
-        return get_string(lib.Relays_Get_SwitchedObj())
-
-    # Setter
-    Value, = args
-    if type(Value) is not bytes:
-        Value = Value.encode(codec)
-    lib.Relays_Set_SwitchedObj(Value)
-    CheckForError()
-
-
-def SwitchedTerm(*args):
-    """Terminal number of the switched object that will be opened when the relay trips."""
-    # Getter
-    if len(args) == 0:
-        return lib.Relays_Get_SwitchedTerm()
-
-    # Setter
-    Value, = args
-    lib.Relays_Set_SwitchedTerm(Value)
-    CheckForError()
-
-
-def Idx(*args):
-    """
-    Get/set active Relay by index;  1..Count
-    """
-    # Getter
-    if len(args) == 0:
-        return lib.Relays_Get_idx()
-
-    # Setter
-    Value, = args
-    CheckForError(lib.Relays_Set_idx(Value))
-
-
-_columns = [
-    "MonitoredObj",
-    "MonitoredTerm",
-    "Name",
-    "SwitchedObj",
-    "SwitchedTerm",
-    "Idx",
-]
+# For backwards compatibility, bind to the default instance
+AllNames = _Relays.AllNames
+Count = _Relays.Count
+First = _Relays.First
+MonitoredObj = _Relays.MonitoredObj
+MonitoredTerm = _Relays.MonitoredTerm
+Name = _Relays.Name
+Next = _Relays.Next
+SwitchedObj = _Relays.SwitchedObj
+SwitchedTerm = _Relays.SwitchedTerm
+Idx = _Relays.Idx
+_columns = _Relays._columns
 __all__ = [
     "AllNames",
     "Count",

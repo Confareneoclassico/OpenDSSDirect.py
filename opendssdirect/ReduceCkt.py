@@ -1,115 +1,127 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from ._utils import lib, codec, get_string
+from ._utils import codec, api_util, Base
 
 
-def Zmag(*args):
-    """Zmag (ohms) for Reduce Option for Z of short lines"""
-    # Getter
-    if len(args) == 0:
-        return lib.ReduceCkt_Get_Zmag()
+class IReduceCkt(Base):
+    """Circuit Reduction interface"""
 
-    # Setter
-    Value, = args
-    ReduceCkt_Set_Zmag(Value)
+    _api_prefix = "ReduceCkt"
+    _columns = []
 
+    __slots__ = []
 
-def KeepLoad(*args):
-    """Keep load flag (T/F) for Reduction options that remove branches"""
-    # Getter
-    if len(args) == 0:
-        return lib.ReduceCkt_Get_KeepLoad() != 0
+    def Zmag(self, *args):
+        """Zmag (ohms) for Reduce Option for Z of short lines"""
+        # Getter
+        if len(args) == 0:
+            return self._lib.ReduceCkt_Get_Zmag()
 
-    # Setter
-    Value, = args
-    lib.ReduceCkt_Set_KeepLoad(bool(Value))
+        # Setter
+        Value, = args
+        ReduceCkt_Set_Zmag(Value)
 
+    def KeepLoad(self, *args):
+        """Keep load flag (T/F) for Reduction options that remove branches"""
+        # Getter
+        if len(args) == 0:
+            return self._lib.ReduceCkt_Get_KeepLoad() != 0
 
-def EditString(*args):
-    """Edit String for RemoveBranches functions"""
-    # Getter
-    if len(args) == 0:
-        return get_string(lib.ReduceCkt_Get_EditString())
+        # Setter
+        Value, = args
+        self._lib.ReduceCkt_Set_KeepLoad(bool(Value))
 
-    # Setter
-    Value, = args
-    if type(Value) is not bytes:
-        Value = Value.encode(codec)
-    lib.ReduceCkt_Set_EditString(Value)
+    def EditString(self, *args):
+        """Edit String for RemoveBranches functions"""
+        # Getter
+        if len(args) == 0:
+            return self._get_string(self._lib.ReduceCkt_Get_EditString())
 
+        # Setter
+        Value, = args
+        if type(Value) is not bytes:
+            Value = Value.encode(self._api_util.codec)
+        self._lib.ReduceCkt_Set_EditString(Value)
 
-def StartPDElement(*args):
-    """Start element for Remove Branch function"""
-    # Getter
-    if len(args) == 0:
-        return get_string(lib.ReduceCkt_Get_StartPDElement())
+    def StartPDElement(self, *args):
+        """Start element for Remove Branch function"""
+        # Getter
+        if len(args) == 0:
+            return self._get_string(self._lib.ReduceCkt_Get_StartPDElement())
 
-    # Setter
-    Value, = args
-    if type(Value) is not bytes:
-        Value = Value.encode(codec)
-    lib.ReduceCkt_Set_StartPDElement(Value)
+        # Setter
+        Value, = args
+        if type(Value) is not bytes:
+            Value = Value.encode(self._api_util.codec)
+        self._lib.ReduceCkt_Set_StartPDElement(Value)
 
+    def EnergyMeter(self, *args):
+        """Name of Energymeter to use for reduction"""
+        # Getter
+        if len(args) == 0:
+            return self._get_string(self._lib.ReduceCkt_Get_EnergyMeter())
 
-def EnergyMeter(*args):
-    """Name of Energymeter to use for reduction"""
-    # Getter
-    if len(args) == 0:
-        return get_string(lib.ReduceCkt_Get_EnergyMeter())
+        # Setter
+        Value, = args
+        if type(Value) is not bytes:
+            Value = Value.encode(self._api_util.codec)
+        self._lib.ReduceCkt_Set_EnergyMeter(Value)
 
-    # Setter
-    Value, = args
-    if type(Value) is not bytes:
-        Value = Value.encode(codec)
-    lib.ReduceCkt_Set_EnergyMeter(Value)
-
-
-def SaveCircuit(CktName):
-    """
+    def SaveCircuit(self, CktName):
+        """
     Save present (reduced) circuit
     Filename is listed in the Text Result interface
     """
-    if type(CktName) is not bytes:
-        CktName = CktName.encode(codec)
-    lib.ReduceCkt_SaveCircuit(CktName)
+        if type(CktName) is not bytes:
+            CktName = CktName.encode(self._api_util.codec)
+        self._lib.ReduceCkt_SaveCircuit(CktName)
+
+    def DoDefault(self):
+        """Do Default Reduction algorithm"""
+        self._lib.ReduceCkt_DoDefault()
+
+    def DoShortLines(self):
+        """Do ShortLines algorithm: Set Zmag first if you don't want the default"""
+        self._lib.ReduceCkt_DoShortLines()
+
+    def DoDangling(self):
+        """Reduce Dangling Algorithm; branches with nothing connected"""
+        self._lib.ReduceCkt_DoDangling()
+
+    def DoLoopBreak(self):
+        self._lib.ReduceCkt_DoLoopBreak()
+
+    def DoParallelLines(self):
+        self._lib.ReduceCkt_DoParallelLines()
+
+    def DoSwitches(self):
+        self._lib.ReduceCkt_DoSwitches()
+
+    def Do1phLaterals(self):
+        self._lib.ReduceCkt_Do1phLaterals()
+
+    def DoBranchRemove(self):
+        self._lib.ReduceCkt_DoBranchRemove()
 
 
-def DoDefault():
-    """Do Default Reduction algorithm"""
-    lib.ReduceCkt_DoDefault()
+_ReduceCkt = IReduceCkt(api_util)
 
-
-def DoShortLines():
-    """Do ShortLines algorithm: Set Zmag first if you don't want the default"""
-    lib.ReduceCkt_DoShortLines()
-
-
-def DoDangling():
-    """Reduce Dangling Algorithm; branches with nothing connected"""
-    lib.ReduceCkt_DoDangling()
-
-
-def DoLoopBreak():
-    lib.ReduceCkt_DoLoopBreak()
-
-
-def DoParallelLines():
-    lib.ReduceCkt_DoParallelLines()
-
-
-def DoSwitches():
-    lib.ReduceCkt_DoSwitches()
-
-
-def Do1phLaterals():
-    lib.ReduceCkt_Do1phLaterals()
-
-
-def DoBranchRemove():
-    lib.ReduceCkt_DoBranchRemove()
-
-
-_columns = []
+# For backwards compatibility, bind to the default instance
+Zmag = _ReduceCkt.Zmag
+KeepLoad = _ReduceCkt.KeepLoad
+EditString = _ReduceCkt.EditString
+StartPDElement = _ReduceCkt.StartPDElement
+EnergyMeter = _ReduceCkt.EnergyMeter
+SaveCircuit = _ReduceCkt.SaveCircuit
+DoDefault = _ReduceCkt.DoDefault
+DoShortLines = _ReduceCkt.DoShortLines
+DoDangling = _ReduceCkt.DoDangling
+DoLoopBreak = _ReduceCkt.DoLoopBreak
+DoParallelLines = _ReduceCkt.DoParallelLines
+DoSwitches = _ReduceCkt.DoSwitches
+Do1phLaterals = _ReduceCkt.Do1phLaterals
+DoBranchRemove = _ReduceCkt.DoBranchRemove
+_columns = _ReduceCkt._columns
 __all__ = [
     "Zmag",
     "KeepLoad",

@@ -1,341 +1,301 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from ._utils import (
-    lib,
-    codec,
-    CheckForError,
-    get_string,
-    get_float64_array,
-    get_string_array,
-    prepare_float64_array,
-)
 
-
-def CloseAllDIFiles():
-    lib.Meters_CloseAllDIFiles()
-    CheckForError()
-
-
-def DoReliabilityCalc(AssumeRestoration):
-    lib.Meters_DoReliabilityCalc(AssumeRestoration)
-    CheckForError()
-
-
-def OpenAllDIFiles():
-    lib.Meters_OpenAllDIFiles()
-    CheckForError()
-
-
-def Reset():
-    lib.Meters_Reset()
-    CheckForError()
-
-
-def ResetAll():
-    lib.Meters_ResetAll()
-    CheckForError()
-
-
-def Sample():
-    lib.Meters_Sample()
-    CheckForError()
-
-
-def SampleAll():
-    lib.Meters_SampleAll()
-    CheckForError()
-
-
-def Save():
-    lib.Meters_Save()
-    CheckForError()
-
-
-def SaveAll():
-    lib.Meters_SaveAll()
-    CheckForError()
-
-
-def SetActiveSection(SectIdx):
-    lib.Meters_SetActiveSection(SectIdx)
-    CheckForError()
-
-
-def AllBranchesInZone():
-    """(read-only) Wide string list of all branches in zone of the active energymeter object."""
-    return get_string_array(CheckForError(lib.Meters_Get_AllBranchesInZone))
-
-
-def AllEndElements():
-    """(read-only) Array of names of all zone end elements."""
-    return get_string_array(CheckForError(lib.Meters_Get_AllEndElements))
-
-
-def AllNames():
-    """(read-only) List of strings with all Meter names"""
-    return get_string_array(lib.Meters_Get_AllNames)
-
-
-def AllocFactors(*args):
-    """Array of doubles: set the phase allocation factors for the active meter."""
-    # Getter
-    if len(args) == 0:
-        return get_float64_array(lib.Meters_Get_AllocFactors)
-
-    # Setter
-    Value, = args
-    Value, ValuePtr, ValueCount = prepare_float64_array(Value)
-    lib.Meters_Set_AllocFactors(ValuePtr, ValueCount)
-    CheckForError()
-
-
-def AvgRepairTime():
-    """(read-only) Average Repair time in this section of the meter zone"""
-    return CheckForError(lib.Meters_Get_AvgRepairTime())
-
-
-def CalcCurrent(*args):
-    """Set the magnitude of the real part of the Calculated Current (normally determined by solution) for the Meter to force some behavior on Load Allocation"""
-    # Getter
-    if len(args) == 0:
-        return get_float64_array(lib.Meters_Get_CalcCurrent)
-
-    # Setter
-    Value, = args
-    Value, ValuePtr, ValueCount = prepare_float64_array(Value)
-    lib.Meters_Set_CalcCurrent(ValuePtr, ValueCount)
-    CheckForError()
-
-
-def Count():
-    """(read-only) Number of Meters"""
-    return lib.Meters_Get_Count()
-
-
-def CountBranches():
-    """(read-only) Number of branches in Active energymeter zone. (Same as sequencelist size)"""
-    return lib.Meters_Get_CountBranches()
-
-
-def CountEndElements():
-    """(read-only) Number of zone end elements in the active meter zone."""
-    return lib.Meters_Get_CountEndElements()
-
-
-def CustInterrupts():
-    """(read-only) Total customer interruptions for this Meter zone based on reliability calcs."""
-    return lib.Meters_Get_CustInterrupts()
-
-
-def DIFilesAreOpen():
-    """(read-only) Global Flag in the DSS to indicate if Demand Interval (DI) files have been properly opened."""
-    return lib.Meters_Get_DIFilesAreOpen() != 0
-
-
-def FaultRateXRepairHrs():
-    """(read-only) Sum of Fault Rate time Repair Hrs in this section of the meter zone"""
-    return lib.Meters_Get_FaultRateXRepairHrs()
-
-
-def First():
-    """Set first Meter active; returns 0 if none."""
-    return lib.Meters_Get_First()
-
-
-def MeteredElement(*args):
-    """Set Name of metered element"""
-    # Getter
-    if len(args) == 0:
-        return get_string(lib.Meters_Get_MeteredElement())
-
-    # Setter
-    Value, = args
-    if type(Value) is not bytes:
-        Value = Value.encode(codec)
-    lib.Meters_Set_MeteredElement(Value)
-    CheckForError()
-
-
-def MeteredTerminal(*args):
-    """set Number of Metered Terminal"""
-    # Getter
-    if len(args) == 0:
-        return lib.Meters_Get_MeteredTerminal()
-
-    # Setter
-    Value, = args
-    lib.Meters_Set_MeteredTerminal(Value)
-    CheckForError()
-
-
-def Name(*args):
-    """
-    Get/set the name of the active Meter
-    """
-    # Getter
-    if len(args) == 0:
-        result = get_string(lib.Meters_Get_Name())
-        if result == "":
-            return "0"
-
-        return result
-
-    # Setter
-    Value, = args
-    if type(Value) is not bytes:
-        Value = Value.encode(codec)
-    CheckForError(lib.Meters_Set_Name(Value))
-
-
-def Next():
-    """Sets next Meter active; returns 0 if no more."""
-    return lib.Meters_Get_Next()
-
-
-def NumSectionBranches():
-    """(read-only) Number of branches (lines) in this section"""
-    return CheckForError(lib.Meters_Get_NumSectionBranches())
-
-
-def NumSectionCustomers():
-    """(read-only) Number of Customers in the active section."""
-    return lib.Meters_Get_NumSectionCustomers()
-
-
-def NumSections():
-    """(read-only) Number of feeder sections in this meter's zone"""
-    return lib.Meters_Get_NumSections()
-
-
-def OCPDeviceType():
-    """(read-only) Type of OCP device. 1=Fuse; 2=Recloser; 3=Relay"""
-    return CheckForError(lib.Meters_Get_OCPDeviceType())
-
-
-def PeakCurrent(*args):
-    """Array of doubles to set values of Peak Current property"""
-    # Getter
-    if len(args) == 0:
-        return get_float64_array(lib.Meters_Get_Peakcurrent)
-
-    # Setter
-    Value, = args
-    Value, ValuePtr, ValueCount = prepare_float64_array(Value)
-    lib.Meters_Set_Peakcurrent(ValuePtr, ValueCount)
-    CheckForError()
-
-
-def RegisterNames():
-    """(read-only) Array of strings containing the names of the registers."""
-    return get_string_array(lib.Meters_Get_RegisterNames)
-
-
-def RegisterValues():
-    """(read-only) Array of all the values contained in the Meter registers for the active Meter."""
-    return get_float64_array(lib.Meters_Get_RegisterValues)
-
-
-def SAIDI():
-    """(read-only) SAIDI for this meter's zone. Execute DoReliabilityCalc first."""
-    return lib.Meters_Get_SAIDI()
-
-
-def SAIFI():
-    """(read-only) Returns SAIFI for this meter's Zone. Execute Reliability Calc method first."""
-    return lib.Meters_Get_SAIFI()
-
-
-def SAIFIkW():
-    """(read-only) SAIFI based on kW rather than number of customers. Get after reliability calcs."""
-    return lib.Meters_Get_SAIFIKW()
-
-
-def SectSeqidx():
-    """(read-only) SequenceIndex of the branch at the head of this section"""
-    return lib.Meters_Get_SectSeqIdx()
-
-
-def SectTotalCust():
-    """(read-only) Total Customers downline from this section"""
-    return lib.Meters_Get_SectTotalCust()
-
-
-def SeqListSize():
-    """(read-only) Size of Sequence List"""
-    return lib.Meters_Get_SeqListSize()
-
-
-def SequenceList(*args):
-    """Get/set Index into Meter's SequenceList that contains branch pointers in lexical order. Earlier index guaranteed to be upline from later index. Sets PDelement active."""
-    # Getter
-    if len(args) == 0:
-        return lib.Meters_Get_SequenceIndex()
-
-    # Setter
-    Value, = args
-    lib.Meters_Set_SequenceIndex(Value)
-    CheckForError()
-
-
-def SumBranchFltRates():
-    """(read-only) Sum of the branch fault rates in this section of the meter's zone"""
-    return lib.Meters_Get_SumBranchFltRates()
-
-
-def TotalCustomers():
-    """(read-only) Total Number of customers in this zone (downline from the EnergyMeter)"""
-    return lib.Meters_Get_TotalCustomers()
-
-
-def Totals():
-    """(read-only) Totals of all registers of all meters"""
-    return get_float64_array(lib.Meters_Get_Totals)
-
-
-def Idx(*args):
-    """
-    Get/set active Meter by index;  1..Count
-    """
-    # Getter
-    if len(args) == 0:
-        return lib.Meters_Get_idx()
-
-    # Setter
-    Value, = args
-    CheckForError(lib.Meters_Set_idx(Value))
-
-
-_columns = [
-    "AllBranchesInZone",
-    "AllEndElements",
-    "AllocFactors",
-    "AvgRepairTime",
-    "CalcCurrent",
-    "CountBranches",
-    "CountEndElements",
-    "CustInterrupts",
-    "FaultRateXRepairHrs",
-    "MeteredElement",
-    "MeteredTerminal",
-    "Name",
-    "NumSectionBranches",
-    "NumSectionCustomers",
-    "NumSections",
-    "OCPDeviceType",
-    "PeakCurrent",
-    "RegisterNames",
-    "RegisterValues",
-    "SAIDI",
-    "SAIFI",
-    "SAIFIkW",
-    "SectSeqidx",
-    "SectTotalCust",
-    "SeqListSize",
-    "SequenceList",
-    "SumBranchFltRates",
-    "TotalCustomers",
-    "Totals",
-]
+from ._utils import codec, CheckForError, api_util, Iterable
+
+
+class IMeters(Iterable):
+    __slots__ = []
+    _api_prefix = "Meters"
+    _columns = [
+        "Name",
+        "Totals",
+        "MeteredTerminal",
+        "NumSectionCustomers",
+        "SectSeqidx",
+        "SumBranchFltRates",
+        "SeqListSize",
+        "AvgRepairTime",
+        "RegisterNames",
+        "SectTotalCust",
+        "SequenceList",
+        "MeteredElement",
+        "PeakCurrent",
+        "AllocFactors",
+        "AllEndElements",
+        "OCPDeviceType",
+        "SAIFIkW",
+        "CountEndElements",
+        "NumSections",
+        "SAIDI",
+        "TotalCustomers",
+        "RegisterValues",
+        "SAIFI",
+        "CustInterrupts",
+        "CountBranches",
+        "CalcCurrent",
+        "AllBranchesInZone",
+        "FaultRateXRepairHrs",
+        "NumSectionBranches",
+    ]
+
+    def CloseAllDIFiles(self):
+        self._lib.Meters_CloseAllDIFiles()
+        self.CheckForError()
+
+    def DoReliabilityCalc(self, AssumeRestoration):
+        self._lib.Meters_DoReliabilityCalc(AssumeRestoration)
+        self.CheckForError()
+
+    def OpenAllDIFiles(self):
+        self._lib.Meters_OpenAllDIFiles()
+        self.CheckForError()
+
+    def Reset(self):
+        self._lib.Meters_Reset()
+        self.CheckForError()
+
+    def ResetAll(self):
+        self._lib.Meters_ResetAll()
+        self.CheckForError()
+
+    def Sample(self):
+        self._lib.Meters_Sample()
+        self.CheckForError()
+
+    def SampleAll(self):
+        self._lib.Meters_SampleAll()
+        self.CheckForError()
+
+    def Save(self):
+        self._lib.Meters_Save()
+        self.CheckForError()
+
+    def SaveAll(self):
+        self._lib.Meters_SaveAll()
+        self.CheckForError()
+
+    def SetActiveSection(self, SectIdx):
+        self._lib.Meters_SetActiveSection(SectIdx)
+        self.CheckForError()
+
+    def AllBranchesInZone(self):
+        """(read-only) Wide string list of all branches in zone of the active energymeter object."""
+        return self._get_string_array(
+            self.CheckForError(self._lib.Meters_Get_AllBranchesInZone)
+        )
+
+    def AllEndElements(self):
+        """(read-only) Array of names of all zone end elements."""
+        return self._get_string_array(
+            self.CheckForError(self._lib.Meters_Get_AllEndElements)
+        )
+
+    def AllocFactors(self, *args):
+        """Array of doubles: set the phase allocation factors for the active meter."""
+        # Getter
+        if len(args) == 0:
+            return self._get_float64_array(self._lib.Meters_Get_AllocFactors)
+
+        # Setter
+        Value, = args
+        Value, ValuePtr, ValueCount = self._prepare_float64_array(Value)
+        self._lib.Meters_Set_AllocFactors(ValuePtr, ValueCount)
+        self.CheckForError()
+
+    def AvgRepairTime(self):
+        """(read-only) Average Repair time in this section of the meter zone"""
+        return self.CheckForError(self._lib.Meters_Get_AvgRepairTime())
+
+    def CalcCurrent(self, *args):
+        """Set the magnitude of the real part of the Calculated Current (normally determined by solution) for the Meter to force some behavior on Load Allocation"""
+        # Getter
+        if len(args) == 0:
+            return self._get_float64_array(self._lib.Meters_Get_CalcCurrent)
+
+        # Setter
+        Value, = args
+        Value, ValuePtr, ValueCount = self._prepare_float64_array(Value)
+        self._lib.Meters_Set_CalcCurrent(ValuePtr, ValueCount)
+        self.CheckForError()
+
+    def CountBranches(self):
+        """(read-only) Number of branches in Active energymeter zone. (Same as sequencelist size)"""
+        return self._lib.Meters_Get_CountBranches()
+
+    def CountEndElements(self):
+        """(read-only) Number of zone end elements in the active meter zone."""
+        return self._lib.Meters_Get_CountEndElements()
+
+    def CustInterrupts(self):
+        """(read-only) Total customer interruptions for this Meter zone based on reliability calcs."""
+        return self._lib.Meters_Get_CustInterrupts()
+
+    def DIFilesAreOpen(self):
+        """(read-only) Global Flag in the DSS to indicate if Demand Interval (DI) files have been properly opened."""
+        return self._lib.Meters_Get_DIFilesAreOpen() != 0
+
+    def FaultRateXRepairHrs(self):
+        """(read-only) Sum of Fault Rate time Repair Hrs in this section of the meter zone"""
+        return self._lib.Meters_Get_FaultRateXRepairHrs()
+
+    def MeteredElement(self, *args):
+        """Set Name of metered element"""
+        # Getter
+        if len(args) == 0:
+            return self._get_string(self._lib.Meters_Get_MeteredElement())
+
+        # Setter
+        Value, = args
+        if type(Value) is not bytes:
+            Value = Value.encode(self._api_util.codec)
+        self._lib.Meters_Set_MeteredElement(Value)
+        self.CheckForError()
+
+    def MeteredTerminal(self, *args):
+        """set Number of Metered Terminal"""
+        # Getter
+        if len(args) == 0:
+            return self._lib.Meters_Get_MeteredTerminal()
+
+        # Setter
+        Value, = args
+        self._lib.Meters_Set_MeteredTerminal(Value)
+        self.CheckForError()
+
+    def NumSectionBranches(self):
+        """(read-only) Number of branches (lines) in this section"""
+        return self.CheckForError(self._lib.Meters_Get_NumSectionBranches())
+
+    def NumSectionCustomers(self):
+        """(read-only) Number of Customers in the active section."""
+        return self._lib.Meters_Get_NumSectionCustomers()
+
+    def NumSections(self):
+        """(read-only) Number of feeder sections in this meter's zone"""
+        return self._lib.Meters_Get_NumSections()
+
+    def OCPDeviceType(self):
+        """(read-only) Type of OCP device. 1=Fuse; 2=Recloser; 3=Relay"""
+        return self.CheckForError(self._lib.Meters_Get_OCPDeviceType())
+
+    def PeakCurrent(self, *args):
+        """Array of doubles to set values of Peak Current property"""
+        # Getter
+        if len(args) == 0:
+            return self._get_float64_array(self._lib.Meters_Get_Peakcurrent)
+
+        # Setter
+        Value, = args
+        Value, ValuePtr, ValueCount = self._prepare_float64_array(Value)
+        self._lib.Meters_Set_Peakcurrent(ValuePtr, ValueCount)
+        self.CheckForError()
+
+    def RegisterNames(self):
+        """(read-only) Array of strings containing the names of the registers."""
+        return self._get_string_array(self._lib.Meters_Get_RegisterNames)
+
+    def RegisterValues(self):
+        """(read-only) Array of all the values contained in the Meter registers for the active Meter."""
+        return self._get_float64_array(self._lib.Meters_Get_RegisterValues)
+
+    def SAIDI(self):
+        """(read-only) SAIDI for this meter's zone. Execute DoReliabilityCalc first."""
+        return self._lib.Meters_Get_SAIDI()
+
+    def SAIFI(self):
+        """(read-only) Returns SAIFI for this meter's Zone. Execute Reliability Calc method first."""
+        return self._lib.Meters_Get_SAIFI()
+
+    def SAIFIkW(self):
+        """(read-only) SAIFI based on kW rather than number of customers. Get after reliability calcs."""
+        return self._lib.Meters_Get_SAIFIKW()
+
+    def SectSeqidx(self):
+        """(read-only) SequenceIndex of the branch at the head of this section"""
+        return self._lib.Meters_Get_SectSeqIdx()
+
+    def SectTotalCust(self):
+        """(read-only) Total Customers downline from this section"""
+        return self._lib.Meters_Get_SectTotalCust()
+
+    def SeqListSize(self):
+        """(read-only) Size of Sequence List"""
+        return self._lib.Meters_Get_SeqListSize()
+
+    def SequenceList(self, *args):
+        """Get/set Index into Meter's SequenceList that contains branch pointers in lexical order. Earlier index guaranteed to be upline from later index. Sets PDelement active."""
+        # Getter
+        if len(args) == 0:
+            return self._lib.Meters_Get_SequenceIndex()
+
+        # Setter
+        Value, = args
+        self._lib.Meters_Set_SequenceIndex(Value)
+        self.CheckForError()
+
+    def SumBranchFltRates(self):
+        """(read-only) Sum of the branch fault rates in this section of the meter's zone"""
+        return self._lib.Meters_Get_SumBranchFltRates()
+
+    def TotalCustomers(self):
+        """(read-only) Total Number of customers in this zone (downline from the EnergyMeter)"""
+        return self._lib.Meters_Get_TotalCustomers()
+
+    def Totals(self):
+        """(read-only) Totals of all registers of all meters"""
+        return self._get_float64_array(self._lib.Meters_Get_Totals)
+
+
+_Meters = IMeters(api_util)
+
+# For backwards compatibility, bind to the default instance
+CloseAllDIFiles = _Meters.CloseAllDIFiles
+DoReliabilityCalc = _Meters.DoReliabilityCalc
+OpenAllDIFiles = _Meters.OpenAllDIFiles
+Reset = _Meters.Reset
+ResetAll = _Meters.ResetAll
+Sample = _Meters.Sample
+SampleAll = _Meters.SampleAll
+Save = _Meters.Save
+SaveAll = _Meters.SaveAll
+SetActiveSection = _Meters.SetActiveSection
+AllBranchesInZone = _Meters.AllBranchesInZone
+AllEndElements = _Meters.AllEndElements
+AllNames = _Meters.AllNames
+AllocFactors = _Meters.AllocFactors
+AvgRepairTime = _Meters.AvgRepairTime
+CalcCurrent = _Meters.CalcCurrent
+Count = _Meters.Count
+CountBranches = _Meters.CountBranches
+CountEndElements = _Meters.CountEndElements
+CustInterrupts = _Meters.CustInterrupts
+DIFilesAreOpen = _Meters.DIFilesAreOpen
+FaultRateXRepairHrs = _Meters.FaultRateXRepairHrs
+First = _Meters.First
+MeteredElement = _Meters.MeteredElement
+MeteredTerminal = _Meters.MeteredTerminal
+Name = _Meters.Name
+Next = _Meters.Next
+NumSectionBranches = _Meters.NumSectionBranches
+NumSectionCustomers = _Meters.NumSectionCustomers
+NumSections = _Meters.NumSections
+OCPDeviceType = _Meters.OCPDeviceType
+PeakCurrent = _Meters.PeakCurrent
+RegisterNames = _Meters.RegisterNames
+RegisterValues = _Meters.RegisterValues
+SAIDI = _Meters.SAIDI
+SAIFI = _Meters.SAIFI
+SAIFIkW = _Meters.SAIFIkW
+SectSeqidx = _Meters.SectSeqidx
+SectTotalCust = _Meters.SectTotalCust
+SeqListSize = _Meters.SeqListSize
+SequenceList = _Meters.SequenceList
+SumBranchFltRates = _Meters.SumBranchFltRates
+TotalCustomers = _Meters.TotalCustomers
+Totals = _Meters.Totals
+Idx = _Meters.Idx
+_columns = _Meters._columns
 __all__ = [
     "CloseAllDIFiles",
     "DoReliabilityCalc",
